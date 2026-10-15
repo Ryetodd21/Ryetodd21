@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hary's animated profile banner">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0e27"/>
+      <stop offset="50%" stop-color="#161b22"/>
+      <stop offset="100%" stop-color="#0a0e27"/>
+    </linearGradient>
+
+    <!-- Wave gradients -->
+    <linearGradient id="waveGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00ffaa" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#00ffaa" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="waveGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff006e" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ff006e" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Title gradient -->
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00ffaa"/>
+      <stop offset="50%" stop-color="#00f5d4"/>
+      <stop offset="100%" stop-color="#ff006e"/>
+    </linearGradient>
+
+    <!-- Title shadow gradient (3D layered text) -->
+    <linearGradient id="textShadow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00ffaa" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ff006e" stop-opacity="0.25"/>
+    </linearGradient>
+
+    <!-- Radial glows -->
+    <radialGradient id="glow1" cx="0.5" cy="0.5">
+      <stop offset="0%" stop-color="#00ffaa" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#00ffaa" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.5" cy="0.5">
+      <stop offset="0%" stop-color="#ff006e" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ff006e" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Glow filter for text -->
+    <filter id="textGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00ffaa" stroke-width="0.5" opacity="0.12"/>
+    </pattern>
+
+    <!-- Scanline pattern -->
+    <pattern id="scanlines" width="2" height="4" patternUnits="userSpaceOnUse">
+      <rect width="2" height="1" fill="#00ffaa" opacity="0.04"/>
+    </pattern>
+  </defs>
+
+  <!-- Background layers -->
+  <rect width="1200" height="320" fill="url(#bgGrad)"/>
+  <rect width="1200" height="320" fill="url(#grid)"/>
+  <rect width="1200" height="320" fill="url(#scanlines)"/>
+
+  <!-- Animated glow blobs -->
+  <circle cx="200" cy="80" r="140" fill="url(#glow1)">
+    <animate attributeName="cx" dur="9s" values="200;260;200" repeatCount="indefinite"/>
+    <animate attributeName="opacity" dur="6s" values="0.8;1;0.8" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1000" cy="240" r="160" fill="url(#glow2)">
+    <animate attributeName="cx" dur="11s" values="1000;940;1000" repeatCount="indefinite"/>
+    <animate attributeName="opacity" dur="7s" values="0.7;1;0.7" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="50" r="80" fill="url(#glow1)" opacity="0.5">
+    <animate attributeName="cy" dur="5s" values="50;80;50" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Animated waves (back layer) -->
+  <g opacity="0.85">
+    <path d="M0,200 Q300,160 600,200 T1200,200 L1200,320 L0,320 Z" fill="url(#waveGrad1)">
+      <animate attributeName="d" dur="8s" repeatCount="indefinite"
+        values="M0,200 Q300,160 600,200 T1200,200 L1200,320 L0,320 Z;
+                M0,180 Q300,220 600,180 T1200,180 L1200,320 L0,320 Z;
+                M0,200 Q300,160 600,200 T1200,200 L1200,320 L0,320 Z"/>
+    </path>
+    <path d="M0,230 Q300,200 600,230 T1200,230 L1200,320 L0,320 Z" fill="url(#waveGrad2)">
+      <animate attributeName="d" dur="6s" repeatCount="indefinite"
+        values="M0,230 Q300,200 600,230 T1200,230 L1200,320 L0,320 Z;
+                M0,210 Q300,250 600,210 T1200,210 L1200,320 L0,320 Z;
+                M0,230 Q300,200 600,230 T1200,230 L1200,320 L0,320 Z"/>
+    </path>
+    <path d="M0,255 Q300,235 600,255 T1200,255 L1200,320 L0,320 Z" fill="url(#waveGrad1)" opacity="0.7">
+      <animate attributeName="d" dur="10s" repeatCount="indefinite"
+        values="M0,255 Q300,235 600,255 T1200,255 L1200,320 L0,320 Z;
+                M0,240 Q300,270 600,240 T1200,240 L1200,320 L0,320 Z;
+                M0,255 Q300,235 600,255 T1200,255 L1200,320 L0,320 Z"/>
+    </path>
+  </g>
+
+  <!-- Floating particles -->
+  <g>
+    <circle cx="100" cy="80" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="4s" values="80;55;80" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4s" values="0.8;1;0.8" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="220" cy="50" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="5s" values="50;30;50" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="360" cy="90" r="2" fill="#00f5d4">
+      <animate attributeName="cy" dur="3s" values="90;65;90" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="3s" values="0.6;1;0.6" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="490" cy="60" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.5s" values="60;38;60" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="640" cy="100" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="3.5s" values="100;75;100" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="770" cy="70" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="5s" values="70;48;70" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="900" cy="90" r="2" fill="#ff006e">
+      <animate attributeName="cy" dur="4s" values="90;65;90" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4s" values="0.5;1;0.5" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1030" cy="60" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="6s" values="60;40;60" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1150" cy="80" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.5s" values="80;55;80" repeatCount="indefinite"/>
+    </circle>
+    <!-- Second row -->
+    <circle cx="180" cy="140" r="1" fill="#00ffaa">
+      <animate attributeName="cy" dur="5s" values="140;115;140" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="320" cy="160" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="4s" values="160;135;160" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="150" r="1" fill="#ff006e">
+      <animate attributeName="cy" dur="5.5s" values="150;125;150" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="700" cy="165" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.5s" values="165;140;165" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="900" cy="155" r="1" fill="#00ffaa">
+      <animate attributeName="cy" dur="5s" values="155;130;155" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1080" cy="170" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="4s" values="170;145;170" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Title with 3D layered effect -->
+  <g>
+    <!-- 3D shadow layers (offset duplicates) -->
+    <text x="604" y="164" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textShadow)" letter-spacing="6" opacity="0.6">hary</text>
+    <text x="602" y="162" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textShadow)" letter-spacing="6" opacity="0.4">hary</text>
+    <!-- Main title -->
+    <text x="600" y="160" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textGrad)" filter="url(#textGlow)" letter-spacing="6">
+      hary
+      <animate attributeName="opacity" dur="4s" values="1;0.92;1" repeatCount="indefinite"/>
+    </text>
+    <!-- Blinking terminal cursor -->
+    <rect x="710" y="100" width="6" height="78" fill="#00ffaa">
+      <animate attributeName="opacity" dur="1.1s" values="1;0;1" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- Decorative brackets with pulse -->
+  <text x="120" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">{</text>
+  <text x="1080" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">}</text>
+
+  <!-- Subtitle line -->
+  <text x="600" y="210" text-anchor="middle" font-family="'Courier New', monospace" font-size="18" fill="#00ffaa" opacity="0.85" font-style="italic">
+    &gt; currently in do_not_disturb mode_
+    <animate attributeName="opacity" dur="2.4s" values="0.85;0.45;0.85" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Bottom tag line -->
+  <text x="600" y="265" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#00ffaa" opacity="0.55" letter-spacing="4">
+    ⟨ coding in the void • learning 3D • loving turu ⟩
+  </text>
+
+  <!-- Status indicators (bottom corners) -->
+  <g transform="translate(50, 285)">
+    <circle cx="0" cy="0" r="4" fill="#00ffaa">
+      <animate attributeName="opacity" dur="2s" values="1;0.25;1" repeatCount="indefinite"/>
+    </circle>
+    <text x="14" y="4" font-family="'Courier New', monospace" font-size="11" fill="#00ffaa" opacity="0.75" letter-spacing="2">ONLINE</text>
+  </g>
+  <g transform="translate(1010, 285)">
+    <text x="0" y="4" font-family="'Courier New', monospace" font-size="11" fill="#ff006e" opacity="0.75" letter-spacing="2">DO NOT DISTURB</text>
+    <circle cx="138" cy="0" r="4" fill="#ff006e">
+      <animate attributeName="opacity" dur="2s" values="0.25;1;0.25" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Diagonal accent lines -->
+  <line x1="0" y1="0" x2="60" y2="0" stroke="#00ffaa" stroke-width="2" opacity="0.6"/>
+  <line x1="0" y1="0" x2="0" y2="60" stroke="#00ffaa" stroke-width="2" opacity="0.6"/>
+  <line x1="1200" y1="320" x2="1140" y2="320" stroke="#ff006e" stroke-width="2" opacity="0.6"/>
+  <line x1="1200" y1="320" x2="1200" y2="260" stroke="#ff006e" stroke-width="2" opacity="0.6"/>
+</svg>
