@@ -28,7 +28,7 @@ If the repo already has content, `--force` is fine here because this is a *profi
 | File                        | Purpose                                          |
 | --------------------------- | ------------------------------------------------ |
 | `README.md`                 | The actual GitHub profile content                |
-| `assets/banner.svg`         | Animated SVG banner shown at the top of the README |
+| `banner.svg`         | Animated SVG banner shown at the top of the README |
 | `index.html`                | Standalone interactive preview (open locally)    |
 | `DEPLOYMENT.md`             | This file                                        |
 
@@ -142,12 +142,20 @@ open index.html    # macOS
 
 The HTML preview has extra goodies the GitHub README can't show:
 
-- 🌌 Particle background (canvas)
-- ⌨️  Live typing animation (vanilla JS, not an SVG)
-- 🃏  3D tilt card that follows your mouse
+- 🚀 Boot-sequence loading screen (`hary.sys v1.0.0` with status lines + progress bar)
+- 🖱️  Custom cursor with lerp ring + hover state (desktop only)
+- 🧲  Magnetic side nav (8 sections, mouse-attracted)
+- 📱  **App Drawer** — 18 Android 13+ Material You–style 3D icons (squircle gradient + glossy highlight + tilt 3D + ripple on click)
+- 🃏  3D tilt card with holographic gradient and orbit ring
+- 📊  Animated activity bars (fill on scroll)
+- 🏃  Marquee fun-facts track
+- 🌊  Animated 3D grid background + particle canvas with mouse repulsion
 - 🌗  Dark / light theme toggle (persists in localStorage)
 - 👁️  Reveal-on-scroll animations
-- ✨  Hover glow on every card
+- ✨  Ripple click effect on every interactive element
+- 📈  Scroll progress bar
+
+> **Caveat:** the App Drawer icons load from `cdn.jsdelivr.net` (simple-icons). Offline preview still works — the 3D cards stay visible, only the inner logo `<img>` is blank. No other feature depends on the network.
 
 ---
 

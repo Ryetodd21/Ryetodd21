@@ -102,6 +102,18 @@ sleep_quality: blessed ✨
 <br/>
 
 <!-- ════════════════════════════════════════════════════════════ -->
+<!--  INTERACTIVE PREVIEW (open index.html locally)              -->
+<!-- ════════════════════════════════════════════════════════════ -->
+
+## 🎮 Interactive Preview
+
+The widgets above are the static GitHub-friendly version. There's also a standalone HTML page with the **App Drawer edition** — 18 Android 13+ Material You–style 3D icons, mouse-tracked tilt, custom cursor, magnetic side nav, activity-bar fill animation, loading screen, and more. Pure HTML/CSS/JS, no build step.
+
+👉 Open [`index.html`](./index.html) directly in your browser, or enable **Settings → Pages** on this repo to preview it live. Requires internet on first load (icons come from `cdn.jsdelivr.net`).
+
+<br/>
+
+<!-- ════════════════════════════════════════════════════════════ -->
 <!--  GITHUB ANALYTICS                                               -->
 <!-- ════════════════════════════════════════════════════════════ -->
 

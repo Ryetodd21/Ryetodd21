@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hary // ui-ux pro max preview</title>
-  <meta name="description" content="Interactive preview of Hary's GitHub profile — UI/UX Pro Max edition." />
+  <title>hary // app drawer edition</title>
+  <meta name="description" content="Interactive preview of Hary's GitHub profile — App Drawer edition, Android 13+ Material You 3D icons + maximum animations." />
+  <meta name="theme-color" content="#0a0e27" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <style>
-    /* ===== Theme tokens ===== */
+    /* ════════════════════════════════════════════════════════════
+       THEME TOKENS
+       ════════════════════════════════════════════════════════════ */
     :root {
       --bg: #0a0e27;
       --bg-deep: #060819;
@@ -31,6 +34,7 @@
       --radius: 14px;
       --radius-lg: 20px;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     [data-theme="light"] {
@@ -51,7 +55,9 @@
       --glow-3: 0 0 20px rgba(214, 51, 132, 0.25);
     }
 
-    /* ===== Reset ===== */
+    /* ════════════════════════════════════════════════════════════
+       RESET & BASE
+       ════════════════════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -61,32 +67,176 @@
       line-height: 1.6;
       overflow-x: hidden;
       min-height: 100vh;
-      transition: background 0.4s ease, color 0.4s ease;
+      transition: background 0.5s ease, color 0.5s ease;
       -webkit-font-smoothing: antialiased;
+      cursor: none; /* hidden when custom cursor active */
+    }
+    @media (pointer: coarse) {
+      body { cursor: auto; }
     }
 
-    /* ===== Particle canvas ===== */
-    #particles {
+    /* ════════════════════════════════════════════════════════════
+       LOADING SCREEN
+       ════════════════════════════════════════════════════════════ */
+    .loader {
       position: fixed;
       inset: 0;
-      z-index: -1;
-      opacity: 0.55;
+      z-index: 9999;
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Code', monospace;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-inner {
+      max-width: 480px;
+      width: 92%;
+      color: var(--accent-1);
+      font-size: 13px;
+      line-height: 1.85;
+    }
+    .loader-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+      color: var(--accent-2);
+      text-shadow: var(--glow-1);
+      position: relative;
+      display: inline-block;
+    }
+    .loader-title::after {
+      content: '_';
+      animation: blink 1s steps(1) infinite;
+    }
+    .loader-title::before, .loader-title::after {
+      position: relative;
+    }
+    .loader-line { opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.3s; }
+    .loader-line.in { opacity: 1; transform: translateX(0); }
+    .loader-ok { color: var(--accent-1); margin-left: 6px; }
+    .loader-final { color: var(--accent-2); font-weight: 600; margin-top: 8px; }
+    .loader-bar {
+      margin-top: 16px;
+      height: 4px;
+      background: var(--surface);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+      box-shadow: var(--glow-1);
+      transition: width 0.18s linear;
+    }
+    .loader-scanlines {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,255,170,0.03) 0 1px, transparent 1px 3px);
       pointer-events: none;
     }
+    @keyframes blink { 50% { opacity: 0; } }
 
-    /* ===== Animated gradient background ===== */
-    .bg-aurora {
+    /* ════════════════════════════════════════════════════════════
+       CUSTOM CURSOR (desktop only)
+       ════════════════════════════════════════════════════════════ */
+    .cursor-dot, .cursor-ring {
       position: fixed;
-      inset: 0;
-      z-index: -2;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(0, 255, 170, 0.12), transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 0, 110, 0.12), transparent 50%),
-        var(--bg);
-      transition: background 0.4s ease;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      will-change: transform;
+    }
+    .cursor-dot {
+      width: 6px; height: 6px;
+      background: var(--accent-1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px var(--accent-1);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--accent-1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s var(--ease), height 0.2s var(--ease), border-color 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    body.cursor-hover .cursor-ring { width: 52px; height: 52px; border-color: var(--accent-3); background: rgba(255, 0, 110, 0.06); }
+    body.cursor-hover .cursor-dot { transform: translate(-50%, -50%) scale(0.4); }
+    body.cursor-down .cursor-ring { width: 28px; height: 28px; }
+    @media (pointer: coarse) {
+      .cursor-dot, .cursor-ring { display: none; }
     }
 
-    /* ===== Layout ===== */
+    /* ════════════════════════════════════════════════════════════
+       SCROLL PROGRESS
+       ════════════════════════════════════════════════════════════ */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      z-index: 100;
+      background: transparent;
+      pointer-events: none;
+    }
+    .scroll-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+      box-shadow: 0 0 12px var(--accent-1);
+      transition: width 0.1s linear;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       BACKGROUNDS
+       ════════════════════════════════════════════════════════════ */
+    #particles {
+      position: fixed; inset: 0;
+      z-index: -1;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .bg-aurora {
+      position: fixed; inset: 0;
+      z-index: -3;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(0, 255, 170, 0.14), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 110, 0.14), transparent 50%),
+        var(--bg);
+      transition: background 0.5s ease;
+    }
+    .bg-grid {
+      position: fixed; inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: perspective(800px) rotateX(60deg) translateZ(0) scale(2);
+      transform-origin: center top;
+      animation: grid-drift 22s linear infinite;
+      -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 70%);
+      mask-image: radial-gradient(ellipse at center, black 25%, transparent 70%);
+      opacity: 0.6;
+    }
+    @keyframes grid-drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 50px; }
+    }
+    .bg-noise {
+      position: fixed; inset: 0;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0.05;
+      mix-blend-mode: overlay;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       LAYOUT
+       ════════════════════════════════════════════════════════════ */
     .container {
       max-width: 1080px;
       margin: 0 auto;
@@ -94,35 +244,47 @@
       position: relative;
     }
 
-    /* ===== Theme toggle ===== */
+    /* ════════════════════════════════════════════════════════════
+       THEME TOGGLE
+       ════════════════════════════════════════════════════════════ */
     .theme-toggle {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 20px; right: 20px;
       z-index: 100;
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 10px 18px;
       color: var(--accent-1);
-      cursor: pointer;
+      cursor: none;
       font-family: 'Fira Code', monospace;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
-      transition: all 0.3s var(--ease);
+      transition: all 0.3s var(--ease), transform 0.2s;
       box-shadow: var(--glow-1);
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      overflow: hidden;
+      position: fixed;
     }
+    @media (pointer: coarse) { .theme-toggle { cursor: pointer; } }
     .theme-toggle:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(0, 255, 170, 0.55);
+      box-shadow: 0 0 30px rgba(0, 255, 170, 0.6);
     }
+    .theme-toggle:active { transform: translateY(0) scale(0.97); }
+    .theme-toggle .icon {
+      display: inline-block;
+      transition: transform 0.5s var(--ease);
+    }
+    .theme-toggle:hover .icon { transform: rotate(180deg); }
 
-    /* ===== Banner ===== */
+    /* ════════════════════════════════════════════════════════════
+       BANNER
+       ════════════════════════════════════════════════════════════ */
     .banner {
       display: block;
       width: 100%;
@@ -130,14 +292,18 @@
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--line);
       transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
+      cursor: none;
     }
+    @media (pointer: coarse) { .banner { cursor: pointer; } }
     .banner:hover {
       transform: translateY(-4px);
       box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--accent-1), var(--glow-1);
     }
     .banner img { width: 100%; height: auto; display: block; }
 
-    /* ===== Typing line ===== */
+    /* ════════════════════════════════════════════════════════════
+       TYPING
+       ════════════════════════════════════════════════════════════ */
     .typing-wrap {
       display: flex;
       align-items: center;
@@ -164,9 +330,10 @@
       animation: blink 1.1s steps(1) infinite;
       vertical-align: text-bottom;
     }
-    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
 
-    /* ===== Badges ===== */
+    /* ════════════════════════════════════════════════════════════
+       BADGES
+       ════════════════════════════════════════════════════════════ */
     .badges {
       display: flex;
       justify-content: center;
@@ -174,12 +341,33 @@
       flex-wrap: wrap;
       margin: 20px 0 48px;
     }
-    .badges img { height: 28px; transition: transform 0.3s var(--ease); }
-    .badges img:hover { transform: scale(1.05); }
+    .badges img {
+      height: 28px;
+      transition: transform 0.3s var(--ease), filter 0.3s;
+    }
+    .badges img:hover { transform: scale(1.05); filter: drop-shadow(0 0 8px var(--accent-1)); }
 
-    /* ===== Section base ===== */
-    section { margin: 72px 0; }
-
+    /* ════════════════════════════════════════════════════════════
+       SECTIONS / TYPOGRAPHY
+       ════════════════════════════════════════════════════════════ */
+    section { margin: 72px 0; position: relative; }
+    section[data-num]::before {
+      content: attr(data-num);
+      position: absolute;
+      top: -36px;
+      right: 0;
+      font-size: 96px;
+      font-weight: 900;
+      color: var(--line-soft);
+      font-family: 'Fira Code', monospace;
+      pointer-events: none;
+      line-height: 1;
+      z-index: -1;
+      letter-spacing: -2px;
+    }
+    @media (max-width: 700px) {
+      section[data-num]::before { font-size: 64px; top: -24px; }
+    }
     h2 {
       font-size: clamp(20px, 3.6vw, 26px);
       font-weight: 800;
@@ -205,7 +393,9 @@
       letter-spacing: 0.5px;
     }
 
-    /* ===== About grid ===== */
+    /* ════════════════════════════════════════════════════════════
+       ABOUT CARDS
+       ════════════════════════════════════════════════════════════ */
     .about-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -219,7 +409,9 @@
       transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
       position: relative;
       overflow: hidden;
+      cursor: none;
     }
+    @media (pointer: coarse) { .about-card { cursor: default; } }
     .about-card::before {
       content: '';
       position: absolute;
@@ -246,27 +438,183 @@
       line-height: 1.6;
     }
 
-    /* ===== Tech stack ===== */
-    .tech-wrap {
+    /* ════════════════════════════════════════════════════════════
+       APP DRAWER — Android 13+ Material You 3D icons
+       ════════════════════════════════════════════════════════════ */
+    .app-drawer {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
       padding: 32px;
-      text-align: center;
-      transition: all 0.4s var(--ease);
+      position: relative;
+      overflow: hidden;
     }
-    .tech-wrap:hover {
-      border-color: var(--accent-1);
+    .app-drawer::before {
+      /* Subtle conic glow */
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: conic-gradient(from 0deg, transparent 0%, rgba(0,255,170,0.04) 25%, transparent 50%, rgba(255,0,110,0.04) 75%, transparent 100%);
+      animation: conic-spin 18s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes conic-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .app-drawer > * { position: relative; z-index: 1; }
+    .drawer-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .drawer-head .counter {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .drawer-head .counter .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-1);
       box-shadow: var(--glow-1);
+      animation: pulse 1.8s ease-in-out infinite;
     }
-    .tech-wrap img {
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+    .drawer-sub {
+      color: var(--muted);
+      font-size: 14px;
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 28px;
+    }
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 24px 18px;
+    }
+    @media (max-width: 720px) {
+      .app-grid { grid-template-columns: repeat(4, 1fr); gap: 22px 14px; }
+    }
+    @media (max-width: 420px) {
+      .app-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .app-icon-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: app-float 4.5s ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes app-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .app-icon {
+      --c1: #00ffaa;
+      --c2: #00b380;
+      --c3: #008060;
+      --rx: 0deg;
+      --ry: 0deg;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 22%;
+      background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 50%, var(--c3) 100%);
+      transform-style: preserve-3d;
+      transform: perspective(500px) rotateX(var(--rx)) rotateY(var(--ry));
+      transition: transform 0.18s ease, box-shadow 0.3s var(--ease);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.18),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 4px 12px rgba(0, 0, 0, 0.25),
+        0 12px 24px rgba(0, 0, 0, 0.2);
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    @media (pointer: coarse) { .app-icon { cursor: pointer; } }
+    .app-icon::before {
+      /* Glossy top highlight */
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 55%;
+      border-radius: 22% 22% 60% 60% / 22% 22% 100% 100%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.05) 60%, transparent);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .app-icon::after {
+      /* 3D depth back face */
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22%;
+      background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 50%, var(--c3) 100%);
+      filter: brightness(0.55) saturate(1.1);
+      transform: translateZ(-8px) scale(0.94);
+      z-index: -1;
+      opacity: 0.85;
+    }
+    .app-icon img {
+      width: 52%;
+      height: 52%;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      transform: translateZ(30px);
+      transition: transform 0.3s var(--ease);
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .app-icon:hover {
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+        0 8px 20px var(--c2),
+        0 24px 48px rgba(0, 0, 0, 0.4);
+    }
+    .app-icon:hover img { transform: translateZ(45px) scale(1.08); }
+    .app-icon-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+      letter-spacing: 0.4px;
+      text-align: center;
+      transition: color 0.3s;
       max-width: 100%;
-      height: auto;
-      transition: transform 0.4s var(--ease);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .tech-wrap:hover img { transform: scale(1.02); }
+    .app-icon-wrap:hover .app-icon-label { color: var(--accent-1); }
 
-    /* ===== 3D tilt card ===== */
+    /* Ripple container overlay */
+    .app-icon .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       3D TILT CARD (enhanced with holographic + parallax)
+       ════════════════════════════════════════════════════════════ */
     .tilt-stage {
       display: flex;
       justify-content: center;
@@ -274,6 +622,8 @@
       margin: 16px 0;
     }
     .tilt-card {
+      --mx: 50%;
+      --my: 50%;
       background: linear-gradient(135deg, rgba(0, 255, 170, 0.12), rgba(255, 0, 110, 0.12));
       border: 1px solid var(--accent-1);
       border-radius: var(--radius-lg);
@@ -285,15 +635,29 @@
       box-shadow: var(--glow-1), inset 0 0 40px rgba(0, 255, 170, 0.08);
       position: relative;
       overflow: hidden;
-      cursor: pointer;
+      cursor: none;
     }
+    @media (pointer: coarse) { .tilt-card { cursor: pointer; } }
     .tilt-card::before {
+      /* Holographic gradient that follows mouse */
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(0, 255, 170, 0.25), transparent 50%);
+      background: radial-gradient(circle at var(--mx) var(--my), rgba(0, 255, 170, 0.3), transparent 50%),
+                      conic-gradient(from 0deg at var(--mx) var(--my), transparent 0deg, rgba(0,255,170,0.15) 60deg, transparent 120deg, rgba(255,0,110,0.15) 240deg, transparent 360deg);
       pointer-events: none;
       transition: opacity 0.3s;
+      mix-blend-mode: screen;
+    }
+    .tilt-card::after {
+      /* Animated noise */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 50%, rgba(0,0,0,0.04) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.5;
     }
     .tilt-card .avatar {
       width: 130px;
@@ -307,7 +671,42 @@
       font-size: 64px;
       box-shadow: 0 12px 30px rgba(0, 255, 170, 0.3);
       transform: translateZ(50px);
+      position: relative;
+      animation: avatar-spin 12s linear infinite;
     }
+    @keyframes avatar-spin {
+      0%, 100% { box-shadow: 0 12px 30px rgba(0, 255, 170, 0.3); }
+      50% { box-shadow: 0 12px 40px rgba(255, 0, 110, 0.4); }
+    }
+    .tilt-card .orbit {
+      position: absolute;
+      top: 35px; left: 50%;
+      transform: translateX(-50%) translateZ(60px);
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 1px dashed rgba(0, 255, 170, 0.3);
+      animation: orbit-rot 10s linear infinite;
+    }
+    .tilt-card .orbit::before, .tilt-card .orbit::after {
+      content: '';
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-1);
+      box-shadow: var(--glow-1);
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .tilt-card .orbit::after {
+      background: var(--accent-3);
+      box-shadow: var(--glow-3);
+      top: auto;
+      bottom: -4px;
+      animation-delay: 5s;
+    }
+    @keyframes orbit-rot { to { transform: translateX(-50%) translateZ(60px) rotate(360deg); } }
     .tilt-card .name {
       text-align: center;
       font-size: 28px;
@@ -316,6 +715,7 @@
       margin-bottom: 8px;
       transform: translateZ(40px);
       letter-spacing: 2px;
+      position: relative;
     }
     .tilt-card .role {
       text-align: center;
@@ -323,6 +723,10 @@
       color: var(--muted);
       transform: translateZ(30px);
       font-family: 'Fira Code', monospace;
+      position: relative;
+    }
+    .tilt-card .role:hover {
+      text-shadow: 1px 0 0 var(--accent-3), -1px 0 0 var(--accent-2);
     }
     .tilt-card .meta {
       position: absolute;
@@ -338,15 +742,17 @@
     }
     .tilt-card .meta .dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--accent-1);
       margin-right: 4px;
       box-shadow: var(--glow-1);
+      animation: pulse 1.8s ease-in-out infinite;
     }
 
-    /* ===== Stats grid ===== */
+    /* ════════════════════════════════════════════════════════════
+       STATS
+       ════════════════════════════════════════════════════════════ */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -359,35 +765,75 @@
       border-radius: var(--radius);
       border: 1px solid var(--line);
       transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+      cursor: none;
     }
+    @media (pointer: coarse) { .stats-grid img { cursor: default; } }
     .stats-grid img:hover {
       transform: scale(1.02);
       box-shadow: var(--glow-1);
     }
 
-    /* ===== Activity bars ===== */
+    /* ════════════════════════════════════════════════════════════
+       ACTIVITY BARS (animated fill)
+       ════════════════════════════════════════════════════════════ */
     .activity {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 24px;
-      font-family: 'Fira Code', monospace;
-      font-size: 13.5px;
     }
     .activity-bar {
-      color: var(--text);
-      margin: 8px 0;
       display: flex;
       align-items: center;
-      gap: 12px;
-      transition: color 0.2s;
+      gap: 14px;
+      margin: 14px 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
     }
-    .activity-bar:hover { color: var(--text-strong); }
-    .activity-bar .label { min-width: 180px; }
-    .activity-bar .bar { color: var(--accent-1); font-weight: bold; flex: 1; }
-    .activity-bar .pct { min-width: 40px; text-align: right; color: var(--accent-1); }
+    .activity-bar .label {
+      min-width: 180px;
+      color: var(--text);
+    }
+    .activity-bar .track {
+      flex: 1;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .activity-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+      border-radius: 4px;
+      box-shadow: 0 0 12px rgba(0, 255, 170, 0.4);
+      transition: width 1.4s var(--ease);
+      position: relative;
+    }
+    .activity-bar .fill::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 12px; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+      animation: bar-shine 2s ease-in-out infinite;
+    }
+    @keyframes bar-shine {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    .activity-bar .pct {
+      min-width: 44px;
+      text-align: right;
+      color: var(--accent-1);
+      font-weight: 600;
+    }
+    .activity.in .fill { width: var(--pct, 0%); }
 
-    /* ===== Details ===== */
+    /* ════════════════════════════════════════════════════════════
+       DETAILS
+       ════════════════════════════════════════════════════════════ */
     details {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -398,7 +844,7 @@
     }
     details:hover { border-color: var(--accent-1); }
     summary {
-      cursor: pointer;
+      cursor: none;
       font-weight: 600;
       color: var(--accent-1);
       user-select: none;
@@ -407,6 +853,7 @@
       align-items: center;
       gap: 8px;
     }
+    @media (pointer: coarse) { summary { cursor: pointer; } }
     summary::-webkit-details-marker { display: none; }
     summary::before {
       content: '▸';
@@ -423,39 +870,61 @@
       font-size: 12.5px;
       color: var(--accent-2);
       font-family: 'Fira Code', monospace;
+      border: 1px solid var(--line-soft);
     }
 
-    /* ===== Fun facts ===== */
-    .fun-facts {
-      list-style: none;
-      padding: 0;
+    /* ════════════════════════════════════════════════════════════
+       FUN FACTS MARQUEE
+       ════════════════════════════════════════════════════════════ */
+    .marquee {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 12px 24px;
+      padding: 24px 0;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+      mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
     }
-    .fun-facts li {
-      padding: 14px 0;
-      border-bottom: 1px dashed var(--line-soft);
-      transition: all 0.3s var(--ease);
-      cursor: default;
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      width: max-content;
+      animation: marquee 38s linear infinite;
     }
-    .fun-facts li:last-child { border-bottom: none; }
-    .fun-facts li:hover {
-      color: var(--accent-1);
-      padding-left: 14px;
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .marquee-item {
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: var(--text);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      transition: color 0.3s;
+    }
+    .marquee-item:hover { color: var(--accent-1); }
+    .marquee-item .sep {
+      color: var(--accent-3);
+      font-weight: bold;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
-    /* ===== Quote ===== */
+    /* ════════════════════════════════════════════════════════════
+       QUOTE
+       ════════════════════════════════════════════════════════════ */
     .quote-wrap {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 28px;
       text-align: center;
       font-style: italic;
       color: var(--text-strong);
       position: relative;
+      font-size: 16px;
     }
     .quote-wrap::before {
       content: '“';
@@ -468,22 +937,25 @@
       font-family: Georgia, serif;
     }
     .quote-wrap .author {
-      margin-top: 8px;
+      margin-top: 12px;
       color: var(--muted);
       font-style: normal;
       font-size: 13px;
     }
 
-    /* ===== Connect ===== */
+    /* ════════════════════════════════════════════════════════════
+       CONNECT
+       ════════════════════════════════════════════════════════════ */
     .connect {
       text-align: center;
       margin: 48px 0;
     }
     .connect .btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 24px;
+      padding: 14px 28px;
       background: var(--surface);
       color: var(--accent-1);
       border: 1px solid var(--accent-1);
@@ -493,64 +965,250 @@
       font-size: 14px;
       transition: all 0.3s var(--ease);
       box-shadow: var(--glow-1);
+      overflow: hidden;
+      cursor: none;
     }
+    @media (pointer: coarse) { .connect .btn { cursor: pointer; } }
     .connect .btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 255, 170, 0.6);
       background: var(--accent-1);
       color: var(--bg);
     }
+    .connect .btn:hover svg { transform: rotate(360deg); }
+    .connect .btn svg { transition: transform 0.6s var(--ease); }
 
-    /* ===== Footer wave ===== */
+    /* ════════════════════════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════════════════════════ */
     .footer-wave { width: 100%; margin-top: 60px; border-radius: var(--radius); overflow: hidden; }
-
-    /* ===== Footer ===== */
     footer {
       text-align: center;
       padding: 40px 24px 24px;
       color: var(--muted);
       font-size: 13px;
     }
-    footer .heart { color: var(--accent-3); animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
+    footer .heart {
+      color: var(--accent-3);
+      animation: pulse 1.4s ease-in-out infinite;
+      display: inline-block;
+    }
     footer .accent { color: var(--accent-1); }
+    footer .build {
+      margin-top: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      opacity: 0.5;
+      letter-spacing: 1px;
+    }
 
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+    /* ════════════════════════════════════════════════════════════
+       MAGNETIC SIDE NAV
+       ════════════════════════════════════════════════════════════ */
+    .magnet-nav {
+      position: fixed;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 14px 8px;
+      background: rgba(22, 27, 34, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      transition: transform 0.18s ease-out, background 0.3s, border-color 0.3s;
+    }
+    [data-theme="light"] .magnet-nav { background: rgba(255, 255, 255, 0.6); }
+    @media (max-width: 900px) { .magnet-nav { display: none; } }
+    .magnet-dot {
+      position: relative;
+      width: 28px; height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: none;
+      transition: transform 0.18s ease-out;
+    }
+    @media (pointer: coarse) { .magnet-dot { cursor: pointer; } }
+    .magnet-dot .pip {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.3s var(--ease);
+    }
+    .magnet-dot .num {
+      position: absolute;
+      font-family: 'Fira Code', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .magnet-dot:hover .num, .magnet-dot.active .num { opacity: 1; }
+    .magnet-dot .label {
+      position: absolute;
+      left: calc(100% + 18px);
+      top: 50%;
+      transform: translateY(-50%) translateX(-8px);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--accent-1);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      letter-spacing: 0.5px;
+    }
+    .magnet-dot:hover .label, .magnet-dot.active .label {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+    .magnet-dot:hover .pip, .magnet-dot.active .pip {
+      background: var(--accent-1);
+      box-shadow: var(--glow-1);
+      transform: scale(1.5);
+    }
 
-    /* ===== Reveal on scroll ===== */
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    /* ════════════════════════════════════════════════════════════
+       RIPPLE
+       ════════════════════════════════════════════════════════════ */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      animation: ripple-anim 0.7s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-anim {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       REVEAL
+       ════════════════════════════════════════════════════════════ */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
     .reveal.in { opacity: 1; transform: translateY(0); }
 
-    /* ===== Selection & scrollbar ===== */
+    /* ════════════════════════════════════════════════════════════
+       SELECTION & SCROLLBAR
+       ════════════════════════════════════════════════════════════ */
     ::selection { background: var(--accent-1); color: var(--bg); }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 5px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent-3); }
 
-    /* ===== Responsive ===== */
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════════════════════════════════ */
     @media (max-width: 600px) {
       .container { padding: 16px 16px 60px; }
       .about-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr; }
       .tilt-card { width: 280px; height: 380px; padding: 28px; }
       .theme-toggle { padding: 8px 14px; font-size: 11px; }
-      .activity-bar .label { min-width: 130px; }
+      .activity-bar { flex-wrap: wrap; }
+      .activity-bar .label { min-width: 100%; }
+      .activity-bar .track { min-width: 100%; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       REDUCED MOTION
+       ════════════════════════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
-<body>
+<body class="is-loading">
+
+  <!-- ════════════════════════════════════════════════════════════
+       LOADING SCREEN
+       ════════════════════════════════════════════════════════════ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader-scanlines"></div>
+    <div class="loader-inner">
+      <div class="loader-title">hary.sys v1.0.0</div>
+      <div class="loader-line" data-line="0">&gt; initializing hary.sys v1.0.0...<span class="loader-ok">[OK]</span></div>
+      <div class="loader-line" data-line="1">&gt; loading personality module...<span class="loader-ok">[OK]</span></div>
+      <div class="loader-line" data-line="2">&gt; booting turu protocols...<span class="loader-ok">[OK]</span></div>
+      <div class="loader-line" data-line="3">&gt; calibrating 3D card...<span class="loader-ok">[OK]</span></div>
+      <div class="loader-line" data-line="4">&gt; connecting to 3D enthusiasts net...<span class="loader-ok">[OK]</span></div>
+      <div class="loader-line loader-final" data-line="5">&gt; all systems nominal. wake the dev.</div>
+      <div class="loader-bar"><div class="loader-bar-fill" id="loaderBar"></div></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       CUSTOM CURSOR
+       ════════════════════════════════════════════════════════════ -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       SCROLL PROGRESS
+       ════════════════════════════════════════════════════════════ -->
+  <div class="scroll-progress" aria-hidden="true">
+    <div class="scroll-progress-fill" id="scrollProgress"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       BACKGROUNDS
+       ════════════════════════════════════════════════════════════ -->
   <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
   <canvas id="particles" aria-hidden="true"></canvas>
+  <svg class="bg-noise" aria-hidden="true">
+    <filter id="noiseFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+  </svg>
 
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle color theme">
-    <span id="theme-icon">🌙</span>
-    <span id="theme-text">DARK</span>
-  </button>
+  <!-- ════════════════════════════════════════════════════════════
+       MAGNETIC SIDE NAV
+       ════════════════════════════════════════════════════════════ -->
+  <nav class="magnet-nav" aria-label="Section navigation">
+    <a class="magnet-dot" href="#about" data-section="about"><span class="pip"></span><span class="num">01</span><span class="label">about</span></a>
+    <a class="magnet-dot" href="#drawer" data-section="drawer"><span class="pip"></span><span class="num">02</span><span class="label">app drawer</span></a>
+    <a class="magnet-dot" href="#profile" data-section="profile"><span class="pip"></span><span class="num">03</span><span class="label">3D card</span></a>
+    <a class="magnet-dot" href="#stats" data-section="stats"><span class="pip"></span><span class="num">04</span><span class="label">stats</span></a>
+    <a class="magnet-dot" href="#trophies" data-section="trophies"><span class="pip"></span><span class="num">05</span><span class="label">trophies</span></a>
+    <a class="magnet-dot" href="#activity" data-section="activity"><span class="pip"></span><span class="num">06</span><span class="label">activity</span></a>
+    <a class="magnet-dot" href="#quote" data-section="quote"><span class="pip"></span><span class="num">07</span><span class="label">wisdom</span></a>
+    <a class="magnet-dot" href="#connect" data-section="connect"><span class="pip"></span><span class="num">08</span><span class="label">connect</span></a>
+  </nav>
 
+  <!-- ════════════════════════════════════════════════════════════
+       MAIN CONTAINER
+       ════════════════════════════════════════════════════════════ -->
   <div class="container">
 
+    <!-- Theme toggle -->
+    <button class="theme-toggle" data-ripple onclick="toggleTheme()" aria-label="Toggle color theme">
+      <span class="icon" id="theme-icon">🌙</span>
+      <span id="theme-text">DARK</span>
+    </button>
+
     <!-- Banner -->
-    <div class="banner reveal">
+    <div class="banner reveal" data-ripple>
       <img src="./assets/banner.svg" alt="Hary's animated banner" />
     </div>
 
@@ -561,16 +1219,16 @@
 
     <!-- Badges -->
     <div class="badges reveal">
-      <img src="https://komarev.com/ghpvc/?username=Ryetodd21&label=VISITORS&color=00ffaa&style=for-the-badge&logo=eye" alt="Profile views" />
-      <img src="https://img.shields.io/github/followers/Ryetodd21?label=FOLLOWERS&style=for-the-badge&color=00ffaa&logo=github" alt="Followers" />
-      <img src="https://img.shields.io/github/stars/Ryetodd21?label=STARS&style=for-the-badge&color=ff006e&logo=star" alt="Stars" />
+      <img src="https://komarev.com/ghpvc/?username=Ryetodd21&label=VISITORS&color=00ffaa&style=for-the-badge&logo=eye" alt="Profile views" data-ripple />
+      <img src="https://img.shields.io/github/followers/Ryetodd21?label=FOLLOWERS&style=for-the-badge&color=00ffaa&logo=github" alt="Followers" data-ripple />
+      <img src="https://img.shields.io/github/stars/Ryetodd21?label=STARS&style=for-the-badge&color=ff006e&logo=star" alt="Stars" data-ripple />
     </div>
 
-    <!-- About Me -->
-    <section id="about" class="reveal">
+    <!-- About -->
+    <section id="about" class="reveal" data-num="01">
       <h2>About Me</h2>
       <div class="about-grid">
-        <div class="about-card">
+        <div class="about-card" data-ripple>
           <h3>👨‍💻 Who Am I?</h3>
           <pre>name: hary
 location: somewhere between dream and reality
@@ -578,7 +1236,7 @@ status: professional turu specialist 💤
 mode: do_not_disturb 🚫
 vibe: chill but make it cyber ✨</pre>
         </div>
-        <div class="about-card">
+        <div class="about-card" data-ripple>
           <h3>🎯 What I'm Doing</h3>
           <pre>current_focus: 3D modeling & design 🎨
 learning: blender, three.js, anything 3D
@@ -589,21 +1247,29 @@ sleep_quality: blessed ✨</pre>
       </div>
     </section>
 
-    <!-- Tech stack -->
-    <section id="tech" class="reveal">
-      <h2>Tech Stack</h2>
-      <div class="tech-wrap">
-        <img src="https://skillicons.dev/icons?i=ts,js,react,nextjs,nodejs,python,threejs,blender,figma,vscode,git,github,html,css,tailwind,linux,vercel,vite&theme=dark" alt="Tech stack" />
+    <!-- App Drawer (NEW) -->
+    <section id="drawer" class="reveal" data-num="02">
+      <h2>App Drawer</h2>
+      <div class="app-drawer" data-ripple>
+        <div class="drawer-head">
+          <span class="counter"><span class="dot"></span>18 installed</span>
+        </div>
+        <p class="drawer-sub">↳ tilt to inspect • click to wake • 18 tools, 0 sleep</p>
+
+        <div class="app-grid" id="appGrid">
+          <!-- icons rendered via JS for cleanliness -->
+        </div>
       </div>
     </section>
 
-    <!-- 3D card -->
-    <section id="profile" class="reveal">
+    <!-- 3D tilt card -->
+    <section id="profile" class="reveal" data-num="03">
       <h2>Interactive 3D Card</h2>
-      <p style="text-align:center; color: var(--muted); margin-bottom: 16px; font-size: 14px;">↳ move your mouse over the card</p>
+      <p style="text-align:center; color: var(--muted); margin-bottom: 16px; font-size: 14px; font-family: 'Fira Code', monospace;">↳ move your mouse over the card</p>
       <div class="tilt-stage">
-        <div class="tilt-card" id="tilt-card">
+        <div class="tilt-card" id="tilt-card" data-ripple>
           <div class="avatar">🌙</div>
+          <div class="orbit"></div>
           <div class="name">hary</div>
           <div class="role">3D enthusiast • turu specialist</div>
           <div class="meta">
@@ -615,32 +1281,32 @@ sleep_quality: blessed ✨</pre>
     </section>
 
     <!-- Stats -->
-    <section id="stats" class="reveal">
+    <section id="stats" class="reveal" data-num="04">
       <h2>GitHub Analytics</h2>
       <div class="stats-grid">
         <img src="https://github-readme-stats.vercel.app/api?username=Ryetodd21&show_icons=true&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&icon_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="GitHub stats" />
         <img src="https://github-readme-streak-stats.herokuapp.com/?user=Ryetodd21&theme=radical&hide_border=true&background=0d1117&stroke=00ffaa&ring=00ffaa&fire=ff006e&currStreakLabel=00ffaa&sideLabels=00ffaa&dates=c9d1d9&border_radius=10" alt="Streak stats" />
       </div>
       <div class="stats-grid">
-        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ryetodd21&layout=compact&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="Top languages" />
-        <img src="https://github-readme-stats.vercel.app/api/wakatime?username=Ryetodd21&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="Wakatime stats" />
+        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ryetodd21&layout=compact&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&icon_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="Top languages" />
+        <img src="https://github-readme-stats.vercel.app/api/wakatime?username=Ryetodd21&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&icon_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="Wakatime stats" />
       </div>
     </section>
 
     <!-- Trophies -->
-    <section id="trophies" class="reveal">
+    <section id="trophies" class="reveal" data-num="05">
       <h2>Trophies</h2>
-      <img src="https://github-profile-trophy.vercel.app/?username=Ryetodd21&theme=radical&no-frame=true&no-bg=true&margin-w=4&column=7" alt="Trophies" style="width: 100%;" />
+      <img src="https://github-profile-trophy.vercel.app/?username=Ryetodd21&theme=radical&no-frame=true&no-bg=true&margin-w=4&column=7" alt="Trophies" style="width: 100%; border-radius: var(--radius);" />
     </section>
 
     <!-- Activity -->
-    <section id="activity" class="reveal">
+    <section id="activity" class="reveal" data-num="06">
       <h2>What I'm Up To</h2>
-      <div class="activity">
-        <div class="activity-bar"><span class="label">🌙 Sleeping</span><span class="bar">████████████████████</span><span class="pct">99%</span></div>
-        <div class="activity-bar"><span class="label">🎨 3D Modeling</span><span class="bar">▓▓▓▓▓▓▓▓░░░░░░░░░░░</span><span class="pct">35%</span></div>
-        <div class="activity-bar"><span class="label">📚 Learning</span><span class="bar">▓▓▓░░░░░░░░░░░░░░░░░</span><span class="pct">15%</span></div>
-        <div class="activity-bar"><span class="label">☕ Existing</span><span class="bar">▓░░░░░░░░░░░░░░░░░░░</span><span class="pct">10%</span></div>
+      <div class="activity" id="activityBox">
+        <div class="activity-bar" style="--pct: 99%;"><span class="label">🌙 Sleeping</span><div class="track"><div class="fill"></div></div><span class="pct">99%</span></div>
+        <div class="activity-bar" style="--pct: 35%;"><span class="label">🎨 3D Modeling</span><div class="track"><div class="fill"></div></div><span class="pct">35%</span></div>
+        <div class="activity-bar" style="--pct: 15%;"><span class="label">📚 Learning</span><div class="track"><div class="fill"></div></div><span class="pct">15%</span></div>
+        <div class="activity-bar" style="--pct: 10%;"><span class="label">☕ Existing</span><div class="track"><div class="fill"></div></div><span class="pct">10%</span></div>
       </div>
       <details>
         <summary>📖 Click to see the source code of my life</summary>
@@ -658,30 +1324,27 @@ console.log(hary);</pre>
       </details>
     </section>
 
-    <!-- Fun facts -->
-    <section id="fun" class="reveal">
+    <!-- Fun facts (marquee) -->
+    <section id="fun" class="reveal" data-num="07">
       <h2>Fun Facts</h2>
-      <ul class="fun-facts">
-        <li>🌙 I run on solar power (sleeping during the day)</li>
-        <li>☕ I drink tea, not coffee — it's the civilized choice</li>
-        <li>💤 My favorite IDE is my pillow</li>
-        <li>🎨 I draw better in my dreams than in 3D</li>
-        <li>🐛 My bugs have bugs</li>
-        <li>🚀 I will finish that project... eventually</li>
-      </ul>
+      <div class="marquee">
+        <div class="marquee-track" id="marqueeTrack">
+          <!-- filled via JS, duplicated for seamless loop -->
+        </div>
+      </div>
     </section>
 
     <!-- Quote -->
-    <section id="quote" class="reveal">
+    <section id="quote" class="reveal" data-num="08">
       <h2>Today's Wisdom</h2>
-      <div class="quote-wrap">
+      <div class="quote-wrap" data-ripple>
         The best error message is the one that never shows up.
         <div class="author">— Thomas Fuchs</div>
       </div>
     </section>
 
     <!-- Connect -->
-    <div class="connect reveal">
+    <div id="connect" class="connect reveal">
       <h2>Let's Connect</h2>
       <a class="btn" href="https://github.com/Ryetodd21" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.4.5 0 5.9 0 12.5c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2 1-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C20.6 22.3 24 17.8 24 12.5 24 5.9 18.6.5 12 .5z"/></svg>
@@ -694,17 +1357,189 @@ console.log(hary);</pre>
 
     <footer>
       <p>made with <span class="heart">❤️</span> and a lot of <span class="accent">turu</span></p>
-      <p style="margin-top: 6px; opacity: 0.6;">interactive preview • ui/ux pro max edition</p>
+      <p class="build">app drawer edition // built with caffeine-free ☕ &amp; CSS3D</p>
     </footer>
 
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════
+       SCRIPTS
+       ════════════════════════════════════════════════════════════ -->
   <script>
-    // ============================================================
-    // Live typing animation
-    // ============================================================
+  (function () {
+    'use strict';
+
+    // ════════════════════════════════════════════════════════════
+    // APP DRAWER — icon data + render
+    // Each: slug for simpleicons, name, gradient color stops
+    // ════════════════════════════════════════════════════════════
+    const ICONS = [
+      { slug: 'typescript',       name: 'TypeScript',  c1: '#3178C6', c2: '#4d8fd0', c3: '#1d4f7c' },
+      { slug: 'javascript',       name: 'JavaScript',  c1: '#F7DF1E', c2: '#F0DB4F', c3: '#B89A00' },
+      { slug: 'react',            name: 'React',       c1: '#61DAFB', c2: '#36c5e9', c3: '#1e8aab' },
+      { slug: 'nextdotjs',        name: 'Next.js',     c1: '#ffffff', c2: '#cccccc', c3: '#666666' },
+      { slug: 'nodedotjs',        name: 'Node.js',     c1: '#5FA04E', c2: '#43823A', c3: '#2c5826' },
+      { slug: 'python',           name: 'Python',      c1: '#3776AB', c2: '#FFD43B', c3: '#1e4f76' },
+      { slug: 'threedotjs',       name: 'Three.js',    c1: '#3a3a3a', c2: '#1a1a1a', c3: '#000000' },
+      { slug: 'blender',          name: 'Blender',     c1: '#F5792A', c2: '#E36D1F', c3: '#a04e10' },
+      { slug: 'figma',            name: 'Figma',       c1: '#F24E1E', c2: '#A259FF', c3: '#0ACF83' },
+      { slug: 'visualstudiocode', name: 'VS Code',     c1: '#0078D4', c2: '#005a9e', c3: '#003c6b' },
+      { slug: 'git',              name: 'Git',         c1: '#F05033', c2: '#C73E26', c3: '#8a2814' },
+      { slug: 'github',           name: 'GitHub',      c1: '#4078c0', c2: '#2c3e63', c3: '#1a2238' },
+      { slug: 'html5',            name: 'HTML5',       c1: '#E34F26', c2: '#F06529', c3: '#a33315' },
+      { slug: 'css',              name: 'CSS3',        c1: '#1572B6', c2: '#1e88c7', c3: '#0d4978' },
+      { slug: 'tailwindcss',      name: 'Tailwind',    c1: '#06B6D4', c2: '#0EA5E9', c3: '#0369a1' },
+      { slug: 'linux',            name: 'Linux',       c1: '#2c2c2c', c2: '#1a1a1a', c3: '#000000' },
+      { slug: 'vercel',           name: 'Vercel',      c1: '#ffffff', c2: '#d0d0d0', c3: '#808080' },
+      { slug: 'vite',             name: 'Vite',        c1: '#646CFF', c2: '#FFD028', c3: '#3a3fb0' },
+    ];
+
+    const appGrid = document.getElementById('appGrid');
+    if (appGrid) {
+      ICONS.forEach((ic, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'app-icon-wrap';
+        wrap.style.setProperty('--delay', (i * 0.18) + 's');
+
+        const el = document.createElement('div');
+        el.className = 'app-icon';
+        el.style.setProperty('--c1', ic.c1);
+        el.style.setProperty('--c2', ic.c2);
+        el.style.setProperty('--c3', ic.c3);
+        el.setAttribute('data-tilt', '');
+        el.setAttribute('data-ripple', '');
+        el.setAttribute('role', 'img');
+        el.setAttribute('aria-label', ic.name);
+        el.title = ic.name;
+
+        const img = document.createElement('img');
+        img.src = `https://cdn.jsdelivr.net/npm/simple-icons@11/icons/${ic.slug}.svg`;
+        img.alt = ic.name;
+        img.loading = 'lazy';
+        img.draggable = false;
+        img.addEventListener('error', () => { img.style.opacity = '0'; });
+
+        el.appendChild(img);
+        wrap.appendChild(el);
+
+        const lbl = document.createElement('span');
+        lbl.className = 'app-icon-label';
+        lbl.textContent = ic.name;
+        wrap.appendChild(lbl);
+
+        appGrid.appendChild(wrap);
+      });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // MARQUEE — fun facts, duplicated for seamless loop
+    // ════════════════════════════════════════════════════════════
+    const FACTS = [
+      '🌙 I run on solar power (sleeping during the day)',
+      '☕ I drink tea, not coffee — it\'s the civilized choice',
+      '💤 My favorite IDE is my pillow',
+      '🎨 I draw better in my dreams than in 3D',
+      '🐛 My bugs have bugs',
+      '🚀 I will finish that project... eventually',
+      '💚 I believe in <br/> over display: block debates',
+      '🤖 My code compiles on the first try (sometimes)',
+      '🎮 Frame rate > feelings',
+    ];
+    const track = document.getElementById('marqueeTrack');
+    if (track) {
+      const make = () => FACTS.map(f => {
+        const span = document.createElement('span');
+        span.className = 'marquee-item';
+        span.innerHTML = `${f} <span class="sep">◆</span>`;
+        return span;
+      });
+      // duplicate the set so the loop is seamless
+      make().forEach(n => track.appendChild(n));
+      make().forEach(n => track.appendChild(n));
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // LOADING SCREEN
+    // ════════════════════════════════════════════════════════════
+    const loader = document.getElementById('loader');
+    const loaderBar = document.getElementById('loaderBar');
+    const lines = document.querySelectorAll('.loader-line');
+    const COUNTER = { v: 0 };
+
+    function bootLoader() {
+      let i = 0;
+      const tick = () => {
+        if (i < lines.length) {
+          lines[i].classList.add('in');
+          COUNTER.v = Math.round(((i + 1) / lines.length) * 100);
+          loaderBar.style.width = COUNTER.v + '%';
+          i++;
+          setTimeout(tick, 200);
+        } else {
+          setTimeout(() => {
+            loader.classList.add('done');
+            document.body.classList.remove('is-loading');
+          }, 380);
+        }
+      };
+      setTimeout(tick, 100);
+    }
+    bootLoader();
+
+    // ════════════════════════════════════════════════════════════
+    // CUSTOM CURSOR (desktop only)
+    // ════════════════════════════════════════════════════════════
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    if (!isTouch) {
+      const dot = document.getElementById('cursorDot');
+      const ring = document.getElementById('cursorRing');
+      let mx = 0, my = 0, rx = 0, ry = 0, rafId = null;
+
+      const onMove = (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+        const hover = e.target.closest('[data-cursor-hover], a, button, .tilt-card, .app-icon, .about-card, .banner, .connect .btn, .quote-wrap, .magnet-dot, summary, [role="img"]');
+        document.body.classList.toggle('cursor-hover', !!hover);
+      };
+      const loop = () => {
+        rx += (mx - rx) * 0.22;
+        ry += (my - ry) * 0.22;
+        ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+        rafId = requestAnimationFrame(loop);
+      };
+      const onDown = () => document.body.classList.add('cursor-down');
+      const onUp = () => document.body.classList.remove('cursor-down');
+      window.addEventListener('mousemove', onMove, { passive: true });
+      window.addEventListener('mousedown', onDown, { passive: true });
+      window.addEventListener('mouseup', onUp, { passive: true });
+      loop();
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // THEME TOGGLE
+    // ════════════════════════════════════════════════════════════
+    const savedTheme = localStorage.getItem('hary-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme === 'light' ? 'light' : 'dark');
+    const setThemeUI = (t) => {
+      document.getElementById('theme-icon').textContent = t === 'light' ? '☀️' : '🌙';
+      document.getElementById('theme-text').textContent = t === 'light' ? 'LIGHT' : 'DARK';
+    };
+    setThemeUI(savedTheme);
+    window.toggleTheme = function () {
+      const root = document.documentElement;
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      setThemeUI(next);
+      try { localStorage.setItem('hary-theme', next); } catch (e) {}
+    };
+
+    // ════════════════════════════════════════════════════════════
+    // TYPING ANIMATION
+    // ════════════════════════════════════════════════════════════
     const typingEl = document.getElementById('typing');
-    const lines = [
+    const TYPING_LINES = [
       'halo, saya hary 👋',
       '3D enthusiast 🎨',
       'professional turu specialist 💤',
@@ -712,9 +1547,8 @@ console.log(hary);</pre>
       'currently in do_not_disturb mode 🚫',
     ];
     let lineIdx = 0, charIdx = 0, deleting = false, speed = 80;
-
     function typeLoop() {
-      const current = lines[lineIdx];
+      const current = TYPING_LINES[lineIdx];
       if (deleting) {
         typingEl.textContent = current.substring(0, charIdx - 1);
         charIdx--;
@@ -724,141 +1558,260 @@ console.log(hary);</pre>
         charIdx++;
         speed = 80;
       }
-      if (!deleting && charIdx === current.length) {
-        speed = 1800; deleting = true;
-      } else if (deleting && charIdx === 0) {
-        deleting = false;
-        lineIdx = (lineIdx + 1) % lines.length;
-        speed = 400;
-      }
+      if (!deleting && charIdx === current.length) { speed = 1800; deleting = true; }
+      else if (deleting && charIdx === 0) { deleting = false; lineIdx = (lineIdx + 1) % TYPING_LINES.length; speed = 400; }
       setTimeout(typeLoop, speed);
     }
     typeLoop();
 
-    // ============================================================
-    // Theme toggle (persists in localStorage)
-    // ============================================================
-    const savedTheme = localStorage.getItem('hary-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme === 'light' ? 'light' : 'dark');
-    document.getElementById('theme-icon').textContent = savedTheme === 'light' ? '☀️' : '🌙';
-    document.getElementById('theme-text').textContent = savedTheme === 'light' ? 'LIGHT' : 'DARK';
-
-    function toggleTheme() {
-      const root = document.documentElement;
-      const isLight = root.getAttribute('data-theme') === 'light';
-      const next = isLight ? 'dark' : 'light';
-      root.setAttribute('data-theme', next);
-      document.getElementById('theme-icon').textContent = next === 'light' ? '☀️' : '🌙';
-      document.getElementById('theme-text').textContent = next === 'light' ? 'LIGHT' : 'DARK';
-      try { localStorage.setItem('hary-theme', next); } catch (e) {}
-    }
-
-    // ============================================================
-    // 3D tilt card (mouse-tracked rotation + radial glow)
-    // ============================================================
+    // ════════════════════════════════════════════════════════════
+    // 3D TILT CARD
+    // ════════════════════════════════════════════════════════════
     const tilt = document.getElementById('tilt-card');
-    tilt.addEventListener('mousemove', (e) => {
-      const r = tilt.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-      const cx = r.width / 2;
-      const cy = r.height / 2;
-      const rotateX = (y - cy) / 10;
-      const rotateY = (cx - x) / 10;
-      tilt.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      tilt.style.setProperty('--mx', `${(x / r.width) * 100}%`);
-      tilt.style.setProperty('--my', `${(y / r.height) * 100}%`);
-    });
-    tilt.addEventListener('mouseleave', () => {
-      tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
-    });
-
-    // ============================================================
-    // Particle background (connected dots)
-    // ============================================================
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function sizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.scale(dpr, dpr);
+    if (tilt) {
+      tilt.addEventListener('mousemove', (e) => {
+        const r = tilt.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const rotateX = (y - r.height / 2) / 10;
+        const rotateY = (r.width / 2 - x) / 10;
+        tilt.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        tilt.style.setProperty('--mx', `${(x / r.width) * 100}%`);
+        tilt.style.setProperty('--my', `${(y / r.height) * 100}%`);
+      });
+      tilt.addEventListener('mouseleave', () => {
+        tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
     }
-    sizeCanvas();
-    window.addEventListener('resize', sizeCanvas);
 
-    const colors = ['#00ffaa', '#00f5d4', '#ff006e', '#fee440'];
-    const N = window.innerWidth < 600 ? 35 : 70;
-
-    function spawnParticles() {
-      particles = [];
-      for (let i = 0; i < N; i++) {
-        particles.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          r: Math.random() * 1.8 + 0.6,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: Math.random() * 0.4 + 0.25,
+    // ════════════════════════════════════════════════════════════
+    // 3D APP ICON TILT (per-icon, delegated)
+    // ════════════════════════════════════════════════════════════
+    const appGridEl = document.getElementById('appGrid');
+    if (appGridEl) {
+      appGridEl.addEventListener('mousemove', (e) => {
+        const icon = e.target.closest('.app-icon');
+        if (!icon) return;
+        const r = icon.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const rx = (y - r.height / 2) / 7;
+        const ry = (r.width / 2 - x) / 7;
+        icon.style.setProperty('--rx', rx + 'deg');
+        icon.style.setProperty('--ry', ry + 'deg');
+      });
+      appGridEl.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.app-icon').forEach(i => {
+          i.style.setProperty('--rx', '0deg');
+          i.style.setProperty('--ry', '0deg');
         });
-      }
+      }, true);
     }
-    spawnParticles();
-    window.addEventListener('resize', spawnParticles);
 
-    function draw() {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
-        if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.fill();
+    // ════════════════════════════════════════════════════════════
+    // RIPPLE (delegated)
+    // ════════════════════════════════════════════════════════════
+    document.addEventListener('pointerdown', (e) => {
+      const el = e.target.closest('[data-ripple]');
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 0.9;
+      const span = document.createElement('span');
+      span.className = 'ripple';
+      span.style.width = span.style.height = size + 'px';
+      span.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      span.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      if (el.classList.contains('app-icon') || el.classList.contains('tilt-card') || el.classList.contains('connect') || el.classList.contains('quote-wrap') || el.classList.contains('app-drawer')) {
+        span.style.background = 'rgba(255,255,255,0.6)';
+      } else {
+        span.style.background = 'rgba(0, 255, 170, 0.5)';
       }
-      // connect close pairs
-      ctx.globalAlpha = 1;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 130) {
-            ctx.beginPath();
-            ctx.strokeStyle = particles[i].color;
-            ctx.globalAlpha = (1 - d / 130) * 0.15;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
+      // ensure position relative
+      const cs = getComputedStyle(el);
+      if (cs.position === 'static') el.style.position = 'relative';
+      if (cs.overflow === 'visible') el.style.overflow = 'hidden';
+      el.appendChild(span);
+      setTimeout(() => span.remove(), 720);
+    });
+
+    // ════════════════════════════════════════════════════════════
+    // MAGNETIC NAV
+    // ════════════════════════════════════════════════════════════
+    const magnetDots = document.querySelectorAll('.magnet-dot');
+    let mouseX = 0, mouseY = 0;
+    if (!isTouch) {
+      window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
+    }
+    const MAGNET_RADIUS = 80;
+    function magnetLoop() {
+      magnetDots.forEach(dot => {
+        const r = dot.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dx = mouseX - cx;
+        const dy = mouseY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist < MAGNET_RADIUS) {
+          const f = (1 - dist / MAGNET_RADIUS) * 8;
+          dot.style.transform = `translate(${dx * 0.3}px, ${dy * 0.3}px) scale(${1 + f * 0.01})`;
+        } else {
+          dot.style.transform = '';
         }
-      }
-      requestAnimationFrame(draw);
+      });
+      requestAnimationFrame(magnetLoop);
     }
-    draw();
+    if (!isTouch) magnetLoop();
+    // smooth-scroll
+    magnetDots.forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = dot.getAttribute('href');
+        if (id && id.startsWith('#')) {
+          const t = document.querySelector(id);
+          if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
 
-    // ============================================================
-    // Reveal on scroll
-    // ============================================================
+    // ════════════════════════════════════════════════════════════
+    // SCROLL PROGRESS
+    // ════════════════════════════════════════════════════════════
+    const scrollProgress = document.getElementById('scrollProgress');
+    function updateScroll() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      if (scrollProgress) scrollProgress.style.width = pct + '%';
+      requestAnimationFrame(updateScroll);
+    }
+    requestAnimationFrame(updateScroll);
+
+    // ════════════════════════════════════════════════════════════
+    // REVEAL ON SCROLL + ACTIVE NAV + ACTIVITY BARS
+    // ════════════════════════════════════════════════════════════
+    const revealEls = document.querySelectorAll('.reveal');
+    const activityBox = document.getElementById('activityBox');
+    const magnetDotsBySection = new Map(
+      Array.from(magnetDots).map(d => [d.getAttribute('data-section'), d])
+    );
+
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in');
+          // activity bars — trigger when the activity section comes into view
+          if (entry.target.id === 'activity' && activityBox) {
+            activityBox.classList.add('in');
+          }
+          // active nav state
+          const id = entry.target.id;
+          if (id && magnetDotsBySection.has(id)) {
+            magnetDots.forEach(d => d.classList.toggle('active', d.getAttribute('data-section') === id));
+          }
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
 
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    revealEls.forEach(el => io.observe(el));
+
+    // ════════════════════════════════════════════════════════════
+    // PARTICLE CANVAS (with trails + mouse repulsion)
+    // ════════════════════════════════════════════════════════════
+    const canvas = document.getElementById('particles');
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      let W = 0, H = 0, particles = [];
+      const colors = ['#00ffaa', '#00f5d4', '#ff006e', '#fee440'];
+
+      function sizeCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      sizeCanvas();
+
+      const N = window.innerWidth < 600 ? 30 : 65;
+      function spawn() {
+        particles = [];
+        for (let i = 0; i < N; i++) {
+          particles.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: (Math.random() - 0.5) * 0.45,
+            r: Math.random() * 1.8 + 0.6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: Math.random() * 0.45 + 0.25,
+          });
+        }
+      }
+      spawn();
+
+      window.addEventListener('resize', () => { sizeCanvas(); spawn(); });
+
+      let pmx = -9999, pmy = -9999;
+      if (!isTouch) {
+        window.addEventListener('mousemove', (e) => { pmx = e.clientX; pmy = e.clientY; }, { passive: true });
+      }
+
+      function draw() {
+        // trail effect
+        ctx.fillStyle = 'rgba(10, 14, 39, 0.18)';
+        ctx.fillRect(0, 0, W, H);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > W) p.vx *= -1;
+          if (p.y < 0 || p.y > H) p.vy *= -1;
+
+          // mouse repulsion
+          if (!isTouch) {
+            const ddx = p.x - pmx;
+            const ddy = p.y - pmy;
+            const dd = Math.hypot(ddx, ddy);
+            if (dd < 100) {
+              const force = (100 - dd) / 100 * 0.6;
+              p.x += (ddx / dd) * force;
+              p.y += (ddy / dd) * force;
+            }
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        }
+        // connection lines
+        ctx.globalAlpha = 1;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 130) {
+              ctx.beginPath();
+              ctx.strokeStyle = particles[i].color;
+              ctx.globalAlpha = (1 - d / 130) * 0.18;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+  })();
   </script>
 </body>
 </html>

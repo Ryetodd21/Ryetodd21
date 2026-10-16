@@ -30,6 +30,16 @@
       <stop offset="100%" stop-color="#ff006e" stop-opacity="0.25"/>
     </linearGradient>
 
+    <!-- Glitch colors -->
+    <linearGradient id="glitchR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff006e" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#ff006e" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="glitchC" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00f5d4" stop-opacity="0"/>
+    </linearGradient>
+
     <!-- Radial glows -->
     <radialGradient id="glow1" cx="0.5" cy="0.5">
       <stop offset="0%" stop-color="#00ffaa" stop-opacity="0.35"/>
@@ -39,10 +49,24 @@
       <stop offset="0%" stop-color="#ff006e" stop-opacity="0.3"/>
       <stop offset="100%" stop-color="#ff006e" stop-opacity="0"/>
     </radialGradient>
+    <radialGradient id="pulseGrad" cx="0.5" cy="0.5">
+      <stop offset="0%" stop-color="#00ffaa" stop-opacity="0"/>
+      <stop offset="80%" stop-color="#00ffaa" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00ffaa" stop-opacity="0"/>
+    </radialGradient>
 
     <!-- Glow filter for text -->
     <filter id="textGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft glow filter -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
       <feMerge>
         <feMergeNode in="b"/>
         <feMergeNode in="SourceGraphic"/>
@@ -58,14 +82,21 @@
     <pattern id="scanlines" width="2" height="4" patternUnits="userSpaceOnUse">
       <rect width="2" height="1" fill="#00ffaa" opacity="0.04"/>
     </pattern>
+
+    <!-- Diagonal scanline gradient (for the sweeping beam) -->
+    <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00ffaa" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#00ffaa" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#00ffaa" stop-opacity="0"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background layers -->
+  <!-- ═══ Background layers ═══ -->
   <rect width="1200" height="320" fill="url(#bgGrad)"/>
   <rect width="1200" height="320" fill="url(#grid)"/>
   <rect width="1200" height="320" fill="url(#scanlines)"/>
 
-  <!-- Animated glow blobs -->
+  <!-- ═══ Animated glow blobs ═══ -->
   <circle cx="200" cy="80" r="140" fill="url(#glow1)">
     <animate attributeName="cx" dur="9s" values="200;260;200" repeatCount="indefinite"/>
     <animate attributeName="opacity" dur="6s" values="0.8;1;0.8" repeatCount="indefinite"/>
@@ -78,7 +109,46 @@
     <animate attributeName="cy" dur="5s" values="50;80;50" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Animated waves (back layer) -->
+  <!-- ═══ Pulse rings from center (concentric expanding) ═══ -->
+  <g transform="translate(600, 200)">
+    <circle r="40" fill="none" stroke="#00ffaa" stroke-width="1" opacity="0">
+      <animate attributeName="r" dur="4s" values="40;180" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4s" values="0.6;0" repeatCount="indefinite"/>
+    </circle>
+    <circle r="40" fill="none" stroke="#00ffaa" stroke-width="1" opacity="0">
+      <animate attributeName="r" dur="4s" values="40;180" begin="1.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4s" values="0.6;0" begin="1.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="40" fill="none" stroke="#ff006e" stroke-width="1" opacity="0">
+      <animate attributeName="r" dur="4s" values="40;180" begin="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4s" values="0.5;0" begin="2.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- ═══ Animated data flow lines (horizontal dashed, drifting) ═══ -->
+  <g stroke-dasharray="8 12" stroke-width="1" fill="none">
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="#00ffaa" opacity="0.3">
+      <animate attributeName="stroke-dashoffset" dur="6s" values="0;-200" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="90" x2="1200" y2="90" stroke="#00f5d4" opacity="0.25">
+      <animate attributeName="stroke-dashoffset" dur="9s" values="0;-300" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="280" x2="1200" y2="280" stroke="#ff006e" opacity="0.25">
+      <animate attributeName="stroke-dashoffset" dur="7s" values="0;-200" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="#00ffaa" opacity="0.2">
+      <animate attributeName="stroke-dashoffset" dur="11s" values="0;-300" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- ═══ Diagonal scanline sweep ═══ -->
+  <g opacity="0.35">
+    <rect x="-300" y="0" width="200" height="320" fill="url(#beamGrad)" transform="skewX(-20)">
+      <animate attributeName="x" dur="5s" values="-300;1500" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- ═══ Animated waves (back layer) ═══ -->
   <g opacity="0.85">
     <path d="M0,200 Q300,160 600,200 T1200,200 L1200,320 L0,320 Z" fill="url(#waveGrad1)">
       <animate attributeName="d" dur="8s" repeatCount="indefinite"
@@ -100,91 +170,152 @@
     </path>
   </g>
 
-  <!-- Floating particles -->
+  <!-- ═══ Floating particles (28 dots, varying sizes/speeds) ═══ -->
   <g>
-    <circle cx="100" cy="80" r="2" fill="#00ffaa">
+    <circle cx="60" cy="80" r="2" fill="#00ffaa">
       <animate attributeName="cy" dur="4s" values="80;55;80" repeatCount="indefinite"/>
       <animate attributeName="opacity" dur="4s" values="0.8;1;0.8" repeatCount="indefinite"/>
     </circle>
-    <circle cx="220" cy="50" r="1.5" fill="#00ffaa">
+    <circle cx="150" cy="50" r="1.5" fill="#00ffaa">
       <animate attributeName="cy" dur="5s" values="50;30;50" repeatCount="indefinite"/>
     </circle>
-    <circle cx="360" cy="90" r="2" fill="#00f5d4">
-      <animate attributeName="cy" dur="3s" values="90;65;90" repeatCount="indefinite"/>
+    <circle cx="220" cy="95" r="2.5" fill="#00f5d4" filter="url(#softGlow)">
+      <animate attributeName="cy" dur="3s" values="95;70;95" repeatCount="indefinite"/>
       <animate attributeName="opacity" dur="3s" values="0.6;1;0.6" repeatCount="indefinite"/>
     </circle>
-    <circle cx="490" cy="60" r="1.5" fill="#00ffaa">
+    <circle cx="300" cy="60" r="1.5" fill="#00ffaa">
       <animate attributeName="cy" dur="4.5s" values="60;38;60" repeatCount="indefinite"/>
     </circle>
-    <circle cx="640" cy="100" r="2" fill="#00ffaa">
+    <circle cx="380" cy="100" r="2" fill="#00ffaa">
       <animate attributeName="cy" dur="3.5s" values="100;75;100" repeatCount="indefinite"/>
     </circle>
-    <circle cx="770" cy="70" r="1.5" fill="#00f5d4">
+    <circle cx="450" cy="70" r="1.5" fill="#00f5d4">
       <animate attributeName="cy" dur="5s" values="70;48;70" repeatCount="indefinite"/>
     </circle>
-    <circle cx="900" cy="90" r="2" fill="#ff006e">
+    <circle cx="530" cy="90" r="2" fill="#ff006e">
       <animate attributeName="cy" dur="4s" values="90;65;90" repeatCount="indefinite"/>
       <animate attributeName="opacity" dur="4s" values="0.5;1;0.5" repeatCount="indefinite"/>
     </circle>
-    <circle cx="1030" cy="60" r="1.5" fill="#00ffaa">
+    <circle cx="610" cy="60" r="1.5" fill="#00ffaa">
       <animate attributeName="cy" dur="6s" values="60;40;60" repeatCount="indefinite"/>
     </circle>
-    <circle cx="1150" cy="80" r="2" fill="#00ffaa">
+    <circle cx="690" cy="100" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="3.5s" values="100;75;100" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="760" cy="50" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="5s" values="50;30;50" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="840" cy="95" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.2s" values="95;70;95" repeatCount="indefinite"/>
+      <animate attributeName="opacity" dur="4.2s" values="0.7;1;0.7" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="910" cy="70" r="1.5" fill="#ff006e">
+      <animate attributeName="cy" dur="5.5s" values="70;45;70" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="990" cy="55" r="2" fill="#00ffaa">
+      <animate attributeName="cy" dur="4s" values="55;30;55" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1060" cy="100" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="4.5s" values="100;75;100" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1140" cy="80" r="2" fill="#00ffaa">
       <animate attributeName="cy" dur="4.5s" values="80;55;80" repeatCount="indefinite"/>
     </circle>
-    <!-- Second row -->
-    <circle cx="180" cy="140" r="1" fill="#00ffaa">
+    <!-- second row -->
+    <circle cx="100" cy="140" r="1" fill="#00ffaa">
       <animate attributeName="cy" dur="5s" values="140;115;140" repeatCount="indefinite"/>
     </circle>
-    <circle cx="320" cy="160" r="1.5" fill="#00f5d4">
+    <circle cx="190" cy="160" r="1.5" fill="#00f5d4">
       <animate attributeName="cy" dur="4s" values="160;135;160" repeatCount="indefinite"/>
     </circle>
-    <circle cx="500" cy="150" r="1" fill="#ff006e">
-      <animate attributeName="cy" dur="5.5s" values="150;125;150" repeatCount="indefinite"/>
+    <circle cx="270" cy="145" r="1" fill="#ff006e">
+      <animate attributeName="cy" dur="5.5s" values="145;120;145" repeatCount="indefinite"/>
     </circle>
-    <circle cx="700" cy="165" r="1.5" fill="#00ffaa">
+    <circle cx="350" cy="165" r="1.5" fill="#00ffaa">
       <animate attributeName="cy" dur="4.5s" values="165;140;165" repeatCount="indefinite"/>
     </circle>
-    <circle cx="900" cy="155" r="1" fill="#00ffaa">
+    <circle cx="430" cy="155" r="1" fill="#00ffaa">
       <animate attributeName="cy" dur="5s" values="155;130;155" repeatCount="indefinite"/>
     </circle>
-    <circle cx="1080" cy="170" r="1.5" fill="#00f5d4">
+    <circle cx="510" cy="170" r="1.5" fill="#00f5d4">
       <animate attributeName="cy" dur="4s" values="170;145;170" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="580" cy="145" r="1" fill="#ff006e">
+      <animate attributeName="cy" dur="5.5s" values="145;120;145" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="660" cy="165" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.5s" values="165;140;165" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="730" cy="155" r="1" fill="#00ffaa">
+      <animate attributeName="cy" dur="5s" values="155;130;155" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="810" cy="170" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="4s" values="170;145;170" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="880" cy="155" r="1" fill="#00ffaa">
+      <animate attributeName="cy" dur="5s" values="155;130;155" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="960" cy="170" r="1.5" fill="#00f5d4">
+      <animate attributeName="cy" dur="4s" values="170;145;170" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1040" cy="160" r="1" fill="#ff006e">
+      <animate attributeName="cy" dur="5.5s" values="160;135;160" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1120" cy="145" r="1.5" fill="#00ffaa">
+      <animate attributeName="cy" dur="4.5s" values="145;120;145" repeatCount="indefinite"/>
     </circle>
   </g>
 
-  <!-- Title with 3D layered effect -->
+  <!-- ═══ Title with 3D layered effect + glitch ═══ -->
   <g>
     <!-- 3D shadow layers (offset duplicates) -->
     <text x="604" y="164" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textShadow)" letter-spacing="6" opacity="0.6">hary</text>
     <text x="602" y="162" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textShadow)" letter-spacing="6" opacity="0.4">hary</text>
+
+    <!-- Glitch chromatic aberration (offset duplicates that flicker) -->
+    <text x="601" y="160" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#glitchR)" letter-spacing="6" opacity="0">
+      hary
+      <animate attributeName="opacity" dur="5s" values="0;0;0.5;0;0;0;0.4;0;0;0;0.6;0" repeatCount="indefinite"/>
+      <animate attributeName="x" dur="5s" values="601;601;597;601;601;601;599;601;601;601;603;601" repeatCount="indefinite"/>
+    </text>
+    <text x="599" y="160" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#glitchC)" letter-spacing="6" opacity="0">
+      hary
+      <animate attributeName="opacity" dur="5s" values="0;0;0.4;0;0;0;0;0.5;0;0;0;0" repeatCount="indefinite"/>
+      <animate attributeName="x" dur="5s" values="599;599;603;599;599;599;599;597;599;599;599;599" repeatCount="indefinite"/>
+    </text>
+
     <!-- Main title -->
     <text x="600" y="160" text-anchor="middle" font-family="'Courier New', 'Fira Code', monospace" font-size="88" font-weight="900" fill="url(#textGrad)" filter="url(#textGlow)" letter-spacing="6">
       hary
       <animate attributeName="opacity" dur="4s" values="1;0.92;1" repeatCount="indefinite"/>
     </text>
+
     <!-- Blinking terminal cursor -->
     <rect x="710" y="100" width="6" height="78" fill="#00ffaa">
       <animate attributeName="opacity" dur="1.1s" values="1;0;1" repeatCount="indefinite"/>
     </rect>
   </g>
 
-  <!-- Decorative brackets with pulse -->
-  <text x="120" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">{</text>
-  <text x="1080" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">}</text>
+  <!-- ═══ Decorative ASCII brackets (pulsing) ═══ -->
+  <text x="80" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">⟨
+    <animate attributeName="opacity" dur="2.5s" values="0.4;0.7;0.4" repeatCount="indefinite"/>
+  </text>
+  <text x="1110" y="180" font-family="'Courier New', monospace" font-size="64" fill="#00ffaa" opacity="0.5" font-weight="bold">⟩
+    <animate attributeName="opacity" dur="2.5s" values="0.4;0.7;0.4" repeatCount="indefinite"/>
+  </text>
 
-  <!-- Subtitle line -->
+  <!-- ═══ Subtitle line ═══ -->
   <text x="600" y="210" text-anchor="middle" font-family="'Courier New', monospace" font-size="18" fill="#00ffaa" opacity="0.85" font-style="italic">
     &gt; currently in do_not_disturb mode_
     <animate attributeName="opacity" dur="2.4s" values="0.85;0.45;0.85" repeatCount="indefinite"/>
   </text>
 
-  <!-- Bottom tag line -->
+  <!-- ═══ Bottom tag line ═══ -->
   <text x="600" y="265" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#00ffaa" opacity="0.55" letter-spacing="4">
     ⟨ coding in the void • learning 3D • loving turu ⟩
   </text>
 
-  <!-- Status indicators (bottom corners) -->
+  <!-- ═══ Status indicators (bottom corners) ═══ -->
   <g transform="translate(50, 285)">
     <circle cx="0" cy="0" r="4" fill="#00ffaa">
       <animate attributeName="opacity" dur="2s" values="1;0.25;1" repeatCount="indefinite"/>
@@ -198,9 +329,19 @@
     </circle>
   </g>
 
-  <!-- Diagonal accent lines -->
+  <!-- ═══ Diagonal accent lines (corners) ═══ -->
   <line x1="0" y1="0" x2="60" y2="0" stroke="#00ffaa" stroke-width="2" opacity="0.6"/>
   <line x1="0" y1="0" x2="0" y2="60" stroke="#00ffaa" stroke-width="2" opacity="0.6"/>
   <line x1="1200" y1="320" x2="1140" y2="320" stroke="#ff006e" stroke-width="2" opacity="0.6"/>
   <line x1="1200" y1="320" x2="1200" y2="260" stroke="#ff006e" stroke-width="2" opacity="0.6"/>
+
+  <!-- ═══ Code snippet decorations (top corners, monospace) ═══ -->
+  <g font-family="'Courier New', monospace" font-size="10" fill="#00ffaa" opacity="0.5">
+    <text x="60" y="32">// hary.sys</text>
+    <animate attributeName="opacity" dur="3s" values="0.3;0.7;0.3" repeatCount="indefinite"/>
+  </g>
+  <g font-family="'Courier New', monospace" font-size="10" fill="#ff006e" opacity="0.5">
+    <text x="1000" y="32">v1.0.0 //</text>
+    <animate attributeName="opacity" dur="3s" values="0.3;0.7;0.3" repeatCount="indefinite" begin="1.5s"/>
+  </g>
 </svg>
