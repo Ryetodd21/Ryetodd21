@@ -1,7 +1,7 @@
 <!-- ╔════════════════════════════════════════════════════════════╗ -->
-<!-- ║   Hary's GitHub Profile — UI/UX Pro Max Edition            ║ -->
+<!-- ║   Hary's GitHub Profile — App Drawer Edition              ║ -->
 <!-- ║   Theme : Cyberpunk × Do Not Disturb Mode                  ║ -->
-<!-- ║   Stack : Pure SVG + CSS animations (zero JS)              ║ -->
+<!-- ║   Stack : Custom SVG banner + third-party widgets + HTML  ║ -->
 <!-- ╚════════════════════════════════════════════════════════════╝ -->
 
 <div align="center">
@@ -90,26 +90,54 @@ sleep_quality: blessed ✨
 <br/>
 
 <!-- ════════════════════════════════════════════════════════════ -->
-<!--  3D PROFILE SHOWCASE                                            -->
-<!-- ════════════════════════════════════════════════════════════ -->
-
-## 🎲 3D Profile Showcase
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ryetodd21/Ryetodd21/main/profile-3d-contrib/profile-night-view.svg" alt="3D Contribution Graph" />
-</p>
-
-<br/>
-
-<!-- ════════════════════════════════════════════════════════════ -->
 <!--  INTERACTIVE PREVIEW (open index.html locally)              -->
 <!-- ════════════════════════════════════════════════════════════ -->
 
 ## 🎮 Interactive Preview
 
-The widgets above are the static GitHub-friendly version. There's also a standalone HTML page with the **App Drawer edition** — 18 Android 13+ Material You–style 3D icons, mouse-tracked tilt, custom cursor, magnetic side nav, activity-bar fill animation, loading screen, and more. Pure HTML/CSS/JS, no build step.
+The widgets above are the GitHub-safe static version. There's also a standalone HTML page with the **App Drawer edition** — 18 Android 13+ Material You–style 3D icons, mouse-tracked tilt, custom cursor, magnetic side nav, activity-bar fill animation, loading screen, and more. Pure HTML/CSS/JS, no build step.
 
 👉 Open [`index.html`](./index.html) directly in your browser, or enable **Settings → Pages** on this repo to preview it live. Requires internet on first load (icons come from `cdn.jsdelivr.net`).
+
+<br/>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--  CURRENTLY (replaces broken profile-3d-contrib + top-langs)  -->
+<!-- ════════════════════════════════════════════════════════════ -->
+
+## 🧪 Currently
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🎨 Building
+
+```
+$ tail -f hary/now.log
+
+> modeling low-poly turret in Blender...
+> wiring up three.js scene...
+> debating if React Server Components
+  are worth the headache (yes, probably)
+> sleeping between compile times
+```
+
+</td>
+<td width="50%" valign="top">
+
+### 📡 Frequency
+
+```
+.lofi ............... always on
+.caffeine ........... 10% (tea only)
+.bugs found today ... ↑↑↑
+.motivation .........  41°C
+```
+
+</td>
+</tr>
+</table>
 
 <br/>
 
@@ -122,10 +150,6 @@ The widgets above are the static GitHub-friendly version. There's also a standal
 <p align="center">
   <img width="49%" src="https://github-readme-stats.vercel.app/api?username=Ryetodd21&show_icons=true&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&icon_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="GitHub Stats" />
   <img width="49%" src="https://github-readme-streak-stats.herokuapp.com/?user=Ryetodd21&theme=radical&hide_border=true&background=0d1117&stroke=00ffaa&ring=00ffaa&fire=ff006e&currStreakLabel=00ffaa&sideLabels=00ffaa&dates=c9d1d9&border_radius=10" alt="Streak Stats" />
-</p>
-
-<p align="center">
-  <img width="40%" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ryetodd21&layout=compact&theme=radical&hide_border=true&bg_color=0d1117&title_color=00ffaa&text_color=c9d1d9&border_radius=10" alt="Top Languages" />
 </p>
 
 <br/>
@@ -143,10 +167,12 @@ The widgets above are the static GitHub-friendly version. There's also a standal
 <br/>
 
 <!-- ════════════════════════════════════════════════════════════ -->
-<!--  CONTRIBUTION SNAKE                                             -->
+<!--  SNAKE (disabled — needs .github/workflows/snake.yml)           -->
 <!-- ════════════════════════════════════════════════════════════ -->
-
-## 🐍 Contribution Snake
+<!--
+The Contribution Snake widget needs a GitHub Action to generate the SVG
+output. It's intentionally left out until the workflow is added (see
+DEPLOYMENT.md §3). Uncomment the block below once the Action runs.
 
 <p align="center">
   <picture>
@@ -157,6 +183,7 @@ The widgets above are the static GitHub-friendly version. There's also a standal
 </p>
 
 <br/>
+-->
 
 <!-- ════════════════════════════════════════════════════════════ -->
 <!--  WHAT I'M UP TO                                                 -->
