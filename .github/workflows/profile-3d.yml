@@ -1,0 +1,35 @@
+name: Generate 3D Profile
+
+on:
+  # Run daily at midnight UTC
+  schedule:
+    - cron: "0 0 * * *"
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Generate 3D profile SVGs
+        uses: yyx990803/profile-3d-contrib@main
+        with:
+          username: Ryetodd21
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move SVGs into subfolder
+        run: |
+          mkdir -p profile-3d-contrib
+          mv *.svg profile-3d-contrib/ 2>/dev/null || true
+
+      - name: Commit generated SVGs
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: refresh 3D profile"
+          file_pattern: profile-3d-contrib/*.svg
