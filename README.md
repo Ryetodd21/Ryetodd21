@@ -232,15 +232,6 @@ console.log(hary);
 <!--  FUN FACTS                                                      -->
 <!-- ════════════════════════════════════════════════════════════ -->
 
-## 🎮 Fun Facts About Me
-
-- 🌙 I run on solar power (sleeping during the day)
-- ☕ I drink tea, not coffee — it's the civilized choice
-- 💤 My favorite IDE is my pillow
-- 🎨 I draw better in my dreams than in 3D
-- 🐛 My bugs have bugs
-- 🚀 I will finish that project... eventually
-- 💚 I believe in `<br/>` over `display: block` debates
 
 <br/>
 
@@ -260,15 +251,6 @@ console.log(hary);
 <!--  CONNECT                                                       -->
 <!-- ════════════════════════════════════════════════════════════ -->
 
-<div align="center">
-
-### 📫 Let's Connect (when I'm awake)
-
-<a href="https://github.com/Ryetodd21">
-  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=00ffaa&color=0d1117&labelColor=0d1117" alt="GitHub" />
-</a>
-
-</div>
 
 <!-- ════════════════════════════════════════════════════════════ -->
 <!--  ANIMATED FOOTER WAVE                                          -->
@@ -279,11 +261,3 @@ console.log(hary);
 ---
 
 <div align="center">
-  
-  **⚡ Fun fact:** This README has zero JavaScript. Pure SVG + CSS animation magic.
-  
-  ⭐ Drop a star on my repos if you vibe with this energy.
-  
-  <sub>made with ❤️ and a lot of turu</sub>
-  
-</div>
